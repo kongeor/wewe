@@ -9,7 +9,11 @@
                  [secretary "1.2.3"]
                  [compojure "1.6.1"]
                  [yogthos/config "1.1.6"]
-                 [ring "1.7.1"]]
+                 [ring "1.7.1"]
+                 [ring/ring-defaults "0.3.2"]
+                 [clj-time "0.15.2"]                        ;; required by defaults
+                 [cheshire "5.9.0"]
+                 [com.taoensso/carmine "2.19.1"]]
 
   :plugins [
             [lein-less "1.7.5"]
