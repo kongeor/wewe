@@ -9,10 +9,8 @@
 ;; home
 
 (defn home-panel []
-  (let [position @(re-frame/subscribe [::subs/position])]
+  (let [weather @(re-frame/subscribe [::subs/weather])]
     [:div
-     [:p (str "lat " (:lat position))]
-     [:p (str "lon " (:lon position))]
      [:div.card
       [:div.card-content
        [:div.media
@@ -22,7 +20,10 @@
           [:img {:src "https://bulma.io/images/placeholders/96x96.png"
                  :alt "placeholder"}]]]
         [:div.media-content
-         [:p.title.is-4 "yo"]]]]]]))
+         [:p.title.is-4 (:name weather)]
+         [:p (str (:weather weather))]
+         [:p (str (:sys weather))]
+         [:p (str (:main weather))]]]]]]))
 
 
 ;; about
@@ -52,5 +53,4 @@
     [:section.section
      [:div.container
       [:h1.title "wewe!"]
-      [:p.subtitle "alsjfaldjf"]
       [show-panel @active-panel]]]))

@@ -6,6 +6,7 @@
                  [thheller/shadow-cljs "2.8.69"]
                  [reagent "0.8.1"]
                  [re-frame "0.10.9"]
+                 [day8.re-frame/http-fx "0.1.6"]
                  [secretary "1.2.3"]
                  [compojure "1.6.1"]
                  [yogthos/config "1.1.6"]

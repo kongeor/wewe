@@ -16,3 +16,8 @@
   ::position
   (fn [db _]
     (:position db)))
+
+(re-frame/reg-sub
+  ::weather
+  (fn [db _]
+    (:weather db)))

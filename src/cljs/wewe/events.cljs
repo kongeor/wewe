@@ -2,6 +2,8 @@
   (:require
    [re-frame.core :as re-frame]
    [wewe.db :as db]
+   [day8.re-frame.http-fx]
+   [ajax.core :as ajax]
    [day8.re-frame.tracing :refer-macros [fn-traced defn-traced]]
    ))
 
@@ -16,7 +18,52 @@
  (fn-traced [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
 
-(re-frame/reg-event-db
+(re-frame/reg-event-fx
   ::set-position
-  (fn-traced [db [_ position]]
-    (assoc db :position position)))
+  (fn-traced [{:keys [db]} [_ position]]
+    {:db (assoc db :position position)
+     :dispatch [::fetch-cities position]}))
+
+(re-frame/reg-event-fx
+  ::fetch-cities
+  (fn-traced [{:keys [db]} [_ pos]]
+    {:db   (assoc db :fetching-cities true)
+     :http-xhrio {:method          :get
+                  :uri             (str "/api/cities?lat=" (-> pos :lat) "&lon=" (-> pos :lon))
+                  :timeout         8000                                           ;; optional see API docs
+                  :response-format (ajax/json-response-format {:keywords? true})  ;; IMPORTANT!: You must provide this.
+                  :on-success      [::success-fetching-cities]
+                  :on-failure      [::failed-fetching-cities]}}))
+
+(re-frame/reg-event-fx
+  ::success-fetching-cities
+  (fn-traced [{:keys [db]} [_ result]]
+    {:db (assoc db :cities result :fetching-cities false)
+     :dispatch [::fetch-weather (-> result first :id)]}
+    ))
+
+(re-frame/reg-event-db
+  ::failed-fetching-cities
+  (fn-traced [db [_ _]]
+    (assoc db :fetching-cities false)))
+
+(re-frame/reg-event-fx
+  ::fetch-weather
+  (fn-traced [{:keys [db]} [_ id]]
+    {:db   (assoc db :fetching-weather true)
+     :http-xhrio {:method          :get
+                  :uri             (str "/api/weather?id=" id)
+                  :timeout         8000                                           ;; optional see API docs
+                  :response-format (ajax/json-response-format {:keywords? true})  ;; IMPORTANT!: You must provide this.
+                  :on-success      [::success-fetching-weather]
+                  :on-failure      [::failed-fetching-weather]}}))
+
+(re-frame/reg-event-db
+  ::success-fetching-weather
+  (fn-traced [db [_ result]]
+    (assoc db :weather result :fetching-weather false)))
+
+(re-frame/reg-event-db
+  ::failed-fetching-weather
+  (fn-traced [db [_ _]]
+    (assoc db :fetching-weather false)))
