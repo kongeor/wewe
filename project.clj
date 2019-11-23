@@ -11,6 +11,7 @@
                  [yogthos/config "1.1.6"]
                  [ring "1.7.1"]
                  [ring/ring-defaults "0.3.2"]
+                 [org.clojure/tools.logging "0.5.0"]
                  [clj-time "0.15.2"]                        ;; required by defaults
                  [cheshire "5.9.0"]
                  [com.taoensso/carmine "2.19.1"]]
