@@ -2,20 +2,27 @@
   (:require
    [re-frame.core :as re-frame]
    [wewe.subs :as subs]
+   [wewe.util :as util]
    ))
 
 
 ;; home
 
 (defn home-panel []
-  (let [name (re-frame/subscribe [::subs/name])]
+  (let [position @(re-frame/subscribe [::subs/position])]
     [:div
-     [:h1 (str "Hello from " @name ". This is the Home Page.")]
-
-     [:div
-      [:a {:href "#/about"}
-       "go to About Page"]]
-     ]))
+     [:p (str "lat " (:lat position))]
+     [:p (str "lon " (:lon position))]
+     [:div.card
+      [:div.card-content
+       [:div.media
+        [:div.media-left
+         [:i.fa.fa-bolt]
+         #_[:figure.image.is-48x48
+          [:img {:src "https://bulma.io/images/placeholders/96x96.png"
+                 :alt "placeholder"}]]]
+        [:div.media-content
+         [:p.title.is-4 "yo"]]]]]]))
 
 
 ;; about
@@ -42,4 +49,8 @@
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [::subs/active-panel])]
-    [show-panel @active-panel]))
+    [:section.section
+     [:div.container
+      [:h1.title "wewe!"]
+      [:p.subtitle "alsjfaldjf"]
+      [show-panel @active-panel]]]))

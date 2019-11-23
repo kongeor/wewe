@@ -1,4 +1,5 @@
 (ns wewe.db)
 
 (def default-db
-  {:name "re-frame"})
+  {:name "re-frame"
+   :position nil})
