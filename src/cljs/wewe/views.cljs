@@ -35,23 +35,31 @@
                                          (re-frame/dispatch [:wewe.events/select-city city]))}
                            (:name city)])]]]))))
 
+(defn icon-link [icon]
+  (str "http://openweathermap.org/img/wn/" icon "@2x.png"))
+
 (defn home-panel []
-  (let [weather @(re-frame/subscribe [::subs/weather])]
-    [:div
-     [search-component]
+  [:div
+   [search-component]
+   (if-let [weather @(re-frame/subscribe [::subs/weather])]
      [:div.card
+      [:header.card-header
+       [:p.card-header-title (:name weather)]
+       [:a.card-header-icon {:href "#" :aria-label "favorite"}
+        [:span.icon
+         [:i.far.fa-star {:aria-hidden true}]]]]
       [:div.card-content
        [:div.media
         [:div.media-left
-         [:i.fa.fa-bolt]
-         #_[:figure.image.is-48x48
-          [:img {:src "https://bulma.io/images/placeholders/96x96.png"
-                 :alt "placeholder"}]]]
+         [:figure.image.is-48x48
+          [:img {:src (icon-link (-> weather :weather first :icon))
+                 :alt (-> weather :weather first :description)}]]]
         [:div.media-content
-         [:p.title.is-4 (:name weather)]
-         [:p (str (:weather weather))]
+         [:p.title.is-4
+          (str (-> weather :weather first :main)
+            " " (-> weather :main :temp Math/round) "°C")]
          [:p (str (:sys weather))]
-         [:p (str (:main weather))]]]]]]))
+         [:p (str (:main weather))]]]]])])
 
 
 ;; about
@@ -79,6 +87,7 @@
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [::subs/active-panel])]
     [:section.section
-     [:div.container
-      [:h1.title "wewe!"]
-      [show-panel @active-panel]]]))
+     [:div.columns.is-centered.is-mobile
+      [:div.column.is-half
+       [:h1.title "wewe!"]
+       [show-panel @active-panel]]]]))

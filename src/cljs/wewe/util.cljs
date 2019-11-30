@@ -11,7 +11,7 @@
 (defn pos-success [pos]
   (let [position {:lat (.. pos -coords -latitude)
                   :lon (.. pos -coords -longitude)}]
-    (re-frame/dispatch [:wewe.events/set-position position])))
+    (re-frame/dispatch [:wewe.events/set-position "" position])))
 
 (def geo-options #js
     {:enableHighAccuracy true,

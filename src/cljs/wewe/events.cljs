@@ -11,7 +11,8 @@
  ::initialize-db
  (fn-traced [_ _]
    {:db db/default-db
-    :geolocation nil}))
+    ; :geolocation nil ; TODO check
+    }))
 
 (re-frame/reg-event-db
  ::set-active-panel
