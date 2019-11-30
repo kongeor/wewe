@@ -1,5 +1,6 @@
 (ns wewe.views
   (:require
+    [reagent.core :as reagent]
    [re-frame.core :as re-frame]
    [wewe.subs :as subs]
    [wewe.util :as util]
@@ -8,9 +9,36 @@
 
 ;; home
 
+(defn search-component []
+  (let [search (reagent/atom "")]
+    (fn []
+      (let [cities @(re-frame/subscribe [::subs/cities])
+            selected-city @(re-frame/subscribe [::subs/selected-city])
+            clazz (if (empty? cities) "" "is-active")]
+        [:div.dropdown {:class clazz}
+         [:div.dropdown-trigger
+          [:input.input {:type          "text"
+                         :placeholder   "Thessaloniki"
+                         :aria-controls "dropdown-menu"
+                         :on-change     #(let [val (-> % .-target .-value)]
+                                           (reset! search val)
+                                           (re-frame/dispatch
+                                             [:wewe.events/set-position val {}]))
+                         :value         @search}]]
+         [:div.dropdown-menu {:role "menu"
+                              :id   "dropdown-menu"}
+          [:div.dropdown-content
+           (for [city cities]
+             ^{:key city} [:a.dropdown-item
+                           {:on-click #(do
+                                         (reset! search (:name city))
+                                         (re-frame/dispatch [:wewe.events/select-city city]))}
+                           (:name city)])]]]))))
+
 (defn home-panel []
   (let [weather @(re-frame/subscribe [::subs/weather])]
     [:div
+     [search-component]
      [:div.card
       [:div.card-content
        [:div.media

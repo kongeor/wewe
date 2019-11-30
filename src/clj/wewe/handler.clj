@@ -15,11 +15,11 @@
 ;; utils
 
 (defn str->double [s]
-  (when s
+  (when-not (clojure.string/blank? s)
     (Double. s)))
 
 (defn str->int [s]
-  (when s
+  (when-not (clojure.string/blank? s)
     (Integer. s)))
 
 (defn json-response [data]
@@ -30,12 +30,16 @@
 (defn cities-handler [request]
   (let [lat (-> request :params :lat str->double)
         lon (-> request :params :lon str->double)
+        name (-> request :params :name)
+        name (str name "*")
         radius (or (-> request :params :radius str->int) 10)
-        data (vec (db/cities-in-radius lat lon radius))]
+        data (vec (db/search-city-data name :lat lat :lon lon :radius radius))]
+    (println "searching cities" (str name "*") lat lon radius)
     (json-response data)))
 
 (defn weather-handler [request]
   ;; todo validate id
+  (println "(" (-> request :params :id str->int))
   (let [id (-> request :params :id str->int)
         cached (db/get-weather id)]
     (if cached
@@ -51,11 +55,21 @@
   (GET "/api/weather" [] weather-handler)
   (resources "/"))
 
+(defn wrap-exception [handler]
+  (fn [request]
+    (try (handler request)
+         (catch Exception e
+           (taoensso.timbre/fatal e)
+           {:status 500
+            :body "Oh no! :'("}))))
+
 (def dev-handler
   (-> #'routes
     (wrap-defaults api-defaults)
-    (wrap-reload push-state/handle)))
+    (wrap-reload push-state/handle)
+    wrap-exception))
 
 (def handler
   (-> routes
-    (wrap-defaults api-defaults)))
+    (wrap-defaults api-defaults)
+    wrap-exception))

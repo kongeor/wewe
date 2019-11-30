@@ -21,3 +21,13 @@
   ::weather
   (fn [db _]
     (:weather db)))
+
+(re-frame/reg-sub
+  ::cities
+  (fn [db _]
+    (:cities db)))
+
+(re-frame/reg-sub
+  ::selected-city
+  (fn [db _]
+    (:selected-city db)))

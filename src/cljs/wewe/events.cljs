@@ -26,10 +26,11 @@
 
 (re-frame/reg-event-fx
   ::fetch-cities
-  (fn-traced [{:keys [db]} [_ pos]]
+  (fn-traced [{:keys [db]} [_ name pos]]
+    (println "*" name pos)
     {:db   (assoc db :fetching-cities true)
      :http-xhrio {:method          :get
-                  :uri             (str "/api/cities?lat=" (-> pos :lat) "&lon=" (-> pos :lon))
+                  :uri             (str "/api/cities?name=" name "&lat=" (-> pos :lat) "&lon=" (-> pos :lon))
                   :timeout         8000                                           ;; optional see API docs
                   :response-format (ajax/json-response-format {:keywords? true})  ;; IMPORTANT!: You must provide this.
                   :on-success      [::success-fetching-cities]
@@ -39,7 +40,8 @@
   ::success-fetching-cities
   (fn-traced [{:keys [db]} [_ result]]
     {:db (assoc db :cities result :fetching-cities false)
-     :dispatch [::fetch-weather (-> result first :id)]}
+     ; :dispatch [::fetch-weather (-> result first :id)]
+     }
     ))
 
 (re-frame/reg-event-db
@@ -67,3 +69,11 @@
   ::failed-fetching-weather
   (fn-traced [db [_ _]]
     (assoc db :fetching-weather false)))
+
+(re-frame/reg-event-fx
+  ::select-city
+  (fn-traced [{:keys [db]} [_ city]]
+    {:db (assoc db :selected-city city :cities [])
+     :dispatch [::fetch-weather (-> city :id)]
+     }
+    ))
