@@ -1,5 +1,6 @@
 (ns wewe.handler
   (:require
+    [compojure.route :as route]
     [compojure.core :refer [GET defroutes]]
     [compojure.route :refer [resources]]
     [ring.util.response :refer [resource-response response]]
@@ -9,7 +10,7 @@
     [wewe.db :as db]
     [wewe.weather :as weather]
     [ring.util.response :as response]
-    [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
+    [ring.middleware.defaults :refer [wrap-defaults site-defaults api-defaults]]
     [cheshire.core :as json]))
 
 ;; utils
@@ -53,7 +54,15 @@
   (GET "/" [] (resource-response "index.html" {:root "public"}))
   (GET "/api/cities" [] cities-handler)
   (GET "/api/weather" [] weather-handler)
-  (resources "/"))
+  (route/not-found "404"))
+
+(defn wrap-dir-index [handler]
+  (fn [req]
+    (handler
+      (update
+        req
+        :uri
+        #(if (= "/" %) "/index.html" %)))))
 
 (defn wrap-exception [handler]
   (fn [request]
@@ -72,4 +81,5 @@
 (def handler
   (-> routes
     (wrap-defaults api-defaults)
+    wrap-dir-index
     wrap-exception))

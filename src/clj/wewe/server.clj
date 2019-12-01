@@ -7,7 +7,7 @@
 
  (defn -main [& args]
    (util/add-gr-cities-from-resource)
-   (let [port (Integer/parseInt (or (env :port) "3000"))]
+   (let [port (or (env :port) 3000)]
      (run-jetty handler {:port port :join? false})))
 
 (comment

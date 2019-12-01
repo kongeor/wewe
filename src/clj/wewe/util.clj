@@ -22,7 +22,7 @@
 (defn add-gr-cities-from-resource []
   (let [gr-cities (read-string (slurp (io/resource "cities_gr.edn")))]
     (doseq [city gr-cities]
-      (db/insert-city (:id city) (-> city :coord :lat) (-> city :coord :lon)))
+      (db/insert-city-data (:id city) (:name city) (-> city :coord :lat) (-> city :coord :lon)))
     (log/info "added" (count gr-cities) "gr cities")))
 
 

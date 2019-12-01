@@ -42,7 +42,6 @@
                             ["clean"]
                             ["run" "-m" "shadow.cljs.devtools.cli" "watch" "app"]]
             "prod"         ["with-profile" "prod" "do"
-                            ["clean"]
                             ["run" "-m" "shadow.cljs.devtools.cli" "release" "app"]]
             "build-report" ["with-profile" "prod" "do"
                             ["clean"]
