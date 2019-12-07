@@ -32,7 +32,7 @@
     {:db   (assoc db :fetching-cities true)
      :http-xhrio {:method          :get
                   :uri             (str "/api/cities?name=" name "&lat=" (-> pos :lat) "&lon=" (-> pos :lon))
-                  :timeout         8000                                           ;; optional see API docs
+                  :timeout         8000
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success      [::success-fetching-cities]
                   :on-failure      [::failed-fetching-cities]}}))
