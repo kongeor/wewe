@@ -67,9 +67,23 @@
   (wcar*
     (car/redis-call [:FT.DROP "wewe:city:names"])))
 
+(defn info-city-index []
+  (wcar*
+    (car/redis-call [:FT.INFO "wewe:city:names"])))
+
+(defn create-city-index-if-not-exists []
+  (try
+    (log/info "Checking if city:names index exists")
+    (info-city-index)
+    (catch Exception e
+      (log/info "Creating city:names index")
+      (create-city-index))))
+
 (comment
   (create-city-index)
-  (drop-city-index))
+  (drop-city-index)
+  (info-city-index)
+  (create-city-index-if-not-exists))
 
 (defn cities-in-radius
   "Returns all the cities in the radius (km) sorted

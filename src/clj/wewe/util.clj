@@ -20,6 +20,8 @@
     (db/insert-city (:id city) (-> city :coord :lat) (-> city :coord :lon))))
 
 (defn add-gr-cities-from-resource []
+  (db/create-city-index-if-not-exists)
+  ;; TODO make sure cities do not exist already
   (let [gr-cities (read-string (slurp (io/resource "cities_gr.edn")))]
     (doseq [city gr-cities]
       (db/insert-city-data (:id city) (:name city) (-> city :coord :lat) (-> city :coord :lon)))

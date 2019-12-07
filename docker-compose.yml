@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  cache:
+    image: redislabs/redisearch
+  web:
+    build: .
+    volumes:
+      - /wewe
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - OPENWEATHER_API_KEY
+      - REDIS_URL=redis://cache:6379
+    depends_on:
+      - cache

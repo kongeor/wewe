@@ -74,12 +74,12 @@
 
 (def dev-handler
   (-> #'routes
-    (wrap-defaults api-defaults)
+    (wrap-defaults site-defaults)
     (wrap-reload push-state/handle)
     wrap-exception))
 
 (def handler
   (-> routes
-    (wrap-defaults api-defaults)
+    (wrap-defaults site-defaults)
     wrap-dir-index
     wrap-exception))
