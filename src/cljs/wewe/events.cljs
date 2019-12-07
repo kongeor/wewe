@@ -33,7 +33,7 @@
      :http-xhrio {:method          :get
                   :uri             (str "/api/cities?name=" name "&lat=" (-> pos :lat) "&lon=" (-> pos :lon))
                   :timeout         8000                                           ;; optional see API docs
-                  :response-format (ajax/json-response-format {:keywords? true})  ;; IMPORTANT!: You must provide this.
+                  :response-format (ajax/json-response-format {:keywords? true})
                   :on-success      [::success-fetching-cities]
                   :on-failure      [::failed-fetching-cities]}}))
 
