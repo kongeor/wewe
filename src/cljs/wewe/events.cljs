@@ -57,7 +57,7 @@
      :http-xhrio {:method          :get
                   :uri             (str "/api/weather?id=" id)
                   :timeout         8000                                           ;; optional see API docs
-                  :response-format (ajax/json-response-format {:keywords? true})  ;; IMPORTANT!: You must provide this.
+                  :response-format (ajax/json-response-format {:keywords? true})
                   :on-success      [::success-fetching-weather]
                   :on-failure      [::failed-fetching-weather]}}))
 
