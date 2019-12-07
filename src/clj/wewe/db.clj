@@ -113,7 +113,6 @@
       (car/expire k 600))))
 
 (comment
-  #_(set-weather 123 "foo")
   (get-weather 734077))
 
 (defn get-city-suggestions [text]
