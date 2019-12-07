@@ -56,7 +56,7 @@
     {:db   (assoc db :fetching-weather true)
      :http-xhrio {:method          :get
                   :uri             (str "/api/weather?id=" id)
-                  :timeout         8000                                           ;; optional see API docs
+                  :timeout         8000
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success      [::success-fetching-weather]
                   :on-failure      [::failed-fetching-weather]}}))
