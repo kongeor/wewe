@@ -6,6 +6,7 @@
     [ring.util.response :refer [resource-response response]]
     [ring.middleware.params :refer [wrap-params]]
     [ring.middleware.reload :refer [wrap-reload]]
+    [ring.logger :as logger]
     [shadow.http.push-state :as push-state]
     [wewe.db :as db]
     [wewe.weather :as weather]
@@ -35,12 +36,10 @@
         name (str name "*")
         radius (or (-> request :params :radius str->int) 10)
         data (vec (db/search-city-data name :lat lat :lon lon :radius radius))]
-    (println "searching cities" (str name "*") lat lon radius)
     (json-response data)))
 
 (defn weather-handler [request]
   ;; todo validate id
-  (println "(" (-> request :params :id str->int))
   (let [id (-> request :params :id str->int)
         cached (db/get-weather id)]
     (if cached
@@ -76,10 +75,12 @@
   (-> #'routes
     (wrap-defaults site-defaults)
     (wrap-reload push-state/handle)
+    logger/wrap-with-logger
     wrap-exception))
 
 (def handler
   (-> routes
     (wrap-defaults site-defaults)
     wrap-dir-index
+    logger/wrap-with-logger
     wrap-exception))

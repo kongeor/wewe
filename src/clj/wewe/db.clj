@@ -38,12 +38,10 @@
         q (concat base-q (if (and lat lon) geo-q []))
         [cnt & data] (wcar* (car/redis-call q))]
     (map (fn [e]
-           (println e)
            (let [coords (-> e
                           second
                           (nth 3)
                           (clojure.string/split #" "))]
-             (println e)
              {:id     (str->int (first e))
               :name   (-> e second second)
               :coords {:lat (-> coords first str->double)
