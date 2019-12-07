@@ -51,8 +51,6 @@
       (partition 2 data))))
 
 (comment
-  #_(insert-city-data 2 "bar" 41.64 22.944)
-  #_(delete-city-data 1)
   (search-city-data "Syk*" :lat 40.64 :lon 22.944)
   (search-city-data "th*"))
 
