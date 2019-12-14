@@ -87,7 +87,11 @@
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [::subs/active-panel])]
     [:section.section
-     [:div.columns.is-centered.is-mobile
-      [:div.column.is-half
-       [:h1.title "wewe!"]
-       [show-panel @active-panel]]]]))
+     [:container
+      [:div.columns.is-centered.is-mobile
+       [:div.column.is-one-third-desktop
+        [:h1.title "wewe!"]
+        [show-panel @active-panel]]]
+      [:footer.footer
+       [:div.content.has-text-centered
+        [:p "foo bar"]]]]]))
