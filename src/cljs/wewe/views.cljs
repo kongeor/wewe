@@ -1,11 +1,47 @@
 (ns wewe.views
   (:require
     [reagent.core :as reagent]
-   [re-frame.core :as re-frame]
-   [wewe.subs :as subs]
-   [wewe.util :as util]
-   ))
+    [re-frame.core :as re-frame]
+    [wewe.subs :as subs]
+    [wewe.util :as util]
+    ))
 
+;var d = new Date();
+;
+;// convert to msec
+;// add local time zone offset
+;// get UTC time in msec
+;var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+;
+;// create new Date object for different city
+;// using supplied offset
+;var nd = new Date(utc + (3600000*offset));
+
+#_(defn get-timezone-time [millis-time country-code]
+  (let [tz-name (-> (. cttz getCountry country-code) (js->clj :keywordize-keys true) :timezones first)
+        tz (. cttz getTimezone tz-name)
+        country-tz-offset (-> (js->clj tz :keywordize-keys true) :utcOffset)
+        d (js/Date. (* millis-time 1000))
+        time (.getTime d)
+        tz-offset (.getTimezoneOffset d)
+        utc (+ time (* 60000 tz-offset))
+        tz-date (js/Date. (+ utc (* 3600000 (/ country-tz-offset 60))))]
+    [d (js/Date utc)]
+    #_(js/Date. millis-time )
+    ))
+
+(defn fmt-digit [d]
+  (if (< d 10)
+    (str "0" d)
+    d))
+
+;; TODO tz?
+(defn fmt-date [millis-time]
+  (let [d (js/Date. (* millis-time 1000))]
+    (str (.getHours d) ":" (fmt-digit (.getMinutes d)))))
+
+#_ (println (get-timezone-time 1576820868 "GR"))
+#_(println (fmt-date 1576820868 ))
 
 ;; home
 
@@ -58,8 +94,15 @@
          [:p.title.is-4
           (str (-> weather :weather first :main)
             " " (-> weather :main :temp Math/round) "°C")]
-         [:p (str (:sys weather))]
-         [:p (str (:main weather))]]]]])])
+         #_[:p (str (:main weather))]
+         [:p "Min: " (-> weather :main :temp_min Math/round)]
+         [:p "Max: " (-> weather :main :temp_max Math/round)]
+         [:p "Humidity: " (-> weather :main :humidity)]
+         [:p "Pressure: " (-> weather :main :pressure)]
+         #_[:p (str (:sys weather))]
+         [:p "Sunrise: " (fmt-date (-> weather :sys :sunrise))]
+         [:p "Sunset: " (fmt-date (-> weather :sys :sunset))]
+         ]]]])])
 
 
 ;; about
@@ -87,11 +130,11 @@
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [::subs/active-panel])]
     [:section.section
-     [:container
-      [:div.columns.is-centered.is-mobile
-       [:div.column.is-one-third-desktop
+     [:div.container
+      [:div.columns.is-centered
+       [:div.column.is-half
         [:h1.title "wewe!"]
         [show-panel @active-panel]]]
       [:footer.footer
        [:div.content.has-text-centered
-        [:p "foo bar"]]]]]))
+        [:p "ugly long footer"]]]]]))

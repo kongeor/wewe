@@ -28,7 +28,6 @@
 (re-frame/reg-event-fx
   ::fetch-cities
   (fn-traced [{:keys [db]} [_ name pos]]
-    (println "*" name pos)
     {:db   (assoc db :fetching-cities true)
      :http-xhrio {:method          :get
                   :uri             (str "/api/cities?name=" name "&lat=" (-> pos :lat) "&lon=" (-> pos :lon))
