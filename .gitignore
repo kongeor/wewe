@@ -2,6 +2,7 @@
 /target
 /*-init.clj
 /resources/public/js/compiled
+/resources/public/css
 out
 
 .idea/
@@ -11,3 +12,5 @@ node_modules
 
 config.edn
 .env
+
+.nrepl-port
