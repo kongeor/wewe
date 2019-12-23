@@ -1,12 +1,13 @@
 # wewe
 
-A small weather application using [re-frame](https://github.com/day8/re-frame)
+A small weather application using [re-frame](https://github.com/day8/re-frame), see
+it in action [here](https://wewe.azurewebsites.net/).
 
 ## Prerequisites 
 
-A jdk and [leiningen](https://leiningen.org/)
+A jdk (tested on 8 and 12 openjdk) and [leiningen](https://leiningen.org/)
 
-## Build just the frontend
+## Building just the frontend
 
 ```
 lein prod

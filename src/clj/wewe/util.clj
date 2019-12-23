@@ -22,10 +22,12 @@
 (defn add-gr-cities-from-resource []
   (db/create-city-index-if-not-exists)
   ;; TODO make sure cities do not exist already
-  (let [gr-cities (read-string (slurp (io/resource "cities_gr.edn")))]
-    (doseq [city gr-cities]
-      (db/insert-city-data (:id city) (:name city) (-> city :coord :lat) (-> city :coord :lon)))
-    (log/info "added" (count gr-cities) "gr cities")))
+  (when-not (first (db/search-city-data "Sykies*"))
+    (let [gr-cities (read-string (slurp (io/resource "cities_gr.edn")))]
+      (doseq [city gr-cities]
+        (db/insert-city-data (:id city) (:name city) (-> city :coord :lat) (-> city :coord :lon)))
+      (log/info "added" (count gr-cities) "gr cities"))))
+
 
 
 #_(add-gr-cities-from-resource)
