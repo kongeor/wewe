@@ -19,6 +19,11 @@
  (fn-traced [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
 
+(re-frame/reg-event-db
+  ::reset-cities
+  (fn-traced [db [_ _]]
+    (assoc db :cities [])))
+
 (re-frame/reg-event-fx
   ::set-position
   (fn-traced [{:keys [db]} [_ position]]
@@ -54,7 +59,7 @@
   (fn-traced [{:keys [db]} [_ id]]
     {:db   (assoc db :fetching-weather true)
      :http-xhrio {:method          :get
-                  :uri             (str "/api/weather?id=" id)
+                  :uri             (str "/api/weather/" id)
                   :timeout         8000
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success      [::success-fetching-weather]

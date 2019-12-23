@@ -50,26 +50,35 @@
     (fn []
       (let [cities @(re-frame/subscribe [::subs/cities])
             selected-city @(re-frame/subscribe [::subs/selected-city])
-            clazz (if (empty? cities) "" "is-active")]
-        [:div.dropdown {:class clazz}
-         [:div.dropdown-trigger
-          [:input.input {:type          "text"
-                         :placeholder   "Thessaloniki"
-                         :aria-controls "dropdown-menu"
-                         :on-change     #(let [val (-> % .-target .-value)]
-                                           (reset! search val)
-                                           (re-frame/dispatch
-                                             [:wewe.events/set-position val {}]))
-                         :value         @search}]]
-         [:div.dropdown-menu {:role "menu"
-                              :id   "dropdown-menu"}
-          [:div.dropdown-content
-           (for [city cities]
-             ^{:key city} [:a.dropdown-item
-                           {:on-click #(do
-                                         (reset! search (:name city))
-                                         (re-frame/dispatch [:wewe.events/select-city city]))}
-                           (:name city)])]]]))))
+            clazz (if (empty? cities) "field" "field is-active")]
+        [:div.field
+         [:div.dropdown {:class clazz}
+          [:div.dropdown-trigger
+           [:input.input {:type "text"
+                          :placeholder "Thessaloniki"
+                          :aria-controls "dropdown-menu"
+                          :on-change #(let [val (-> % .-target .-value)]
+                                        (reset! search val)
+                                        (if (clojure.string/blank? val)
+                                          (re-frame/dispatch
+                                            [:wewe.events/reset-cities])
+                                          (re-frame/dispatch
+                                            [:wewe.events/set-position val {}])))
+                          :value @search}]]
+          [:div.dropdown-menu {:role "menu"
+                               :id "dropdown-menu"}
+           [:div.dropdown-content
+            (for [city cities]
+              ^{:key city} [:a.dropdown-item
+                            {:on-click #(do
+                                          (reset! search (:name city))
+                                          (re-frame/dispatch [:wewe.events/select-city city]))}
+                            (:name city)])]]]
+         #_[:div.field
+          [:label.checkbox
+           [:input {:type "checkbox"
+                    :on-click #(util/fetch-position)}]
+           " Use browser location"]]]))))
 
 (defn icon-link [icon]
   (str "http://openweathermap.org/img/wn/" icon "@2x.png"))
@@ -134,7 +143,7 @@
       [:div.columns.is-centered
        [:div.column.is-half
         [:h1.title "wewe!"]
-        [show-panel @active-panel]]]
-      [:footer.footer
-       [:div.content.has-text-centered
-        [:p "ugly long footer"]]]]]))
+        [show-panel @active-panel]
+        #_[:footer.footer
+         [:div.content.has-text-centered
+          [:p "ugly long footer"]]]]]]]))

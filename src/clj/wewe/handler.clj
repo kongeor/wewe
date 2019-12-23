@@ -40,7 +40,8 @@
 
 (defn weather-handler [request]
   ;; todo validate id
-  (let [id (-> request :params :id str->int)
+  (clojure.pprint/pprint request)
+  (let [id (-> request :route-params :id str->int)
         cached (db/get-weather id)]
     (if cached
       (json-response cached)
@@ -52,7 +53,7 @@
 (defroutes routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))
   (GET "/api/cities" [] cities-handler)
-  (GET "/api/weather" [] weather-handler)
+  (GET "/api/weather/:id" [] weather-handler)
   (route/not-found "404"))
 
 (defn wrap-dir-index [handler]
