@@ -142,7 +142,7 @@
      [:div.container
       [:div.columns.is-centered
        [:div.column.is-half
-        [:h1.title "wewe!"]
+        [:h1.title "wewe!!!!!1"]
         [show-panel @active-panel]
         #_[:footer.footer
          [:div.content.has-text-centered
